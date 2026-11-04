@@ -7,8 +7,14 @@ import '../utils/format.dart';
 class DeadlinesList extends StatelessWidget {
   final List<Task> tasks;
   final List<Course> courses;
+  final ValueChanged<Task> onTaskTap;
 
-  const DeadlinesList({super.key, required this.tasks, required this.courses});
+  const DeadlinesList({
+    super.key,
+    required this.tasks,
+    required this.courses,
+    required this.onTaskTap,
+  });
 
   String _courseName(int courseId) {
     return courses
@@ -42,6 +48,7 @@ class DeadlinesList extends StatelessWidget {
           subtitle: Text(
             '${_courseName(task.courseId)} • ${formatDate(task.dueDate)}',
           ),
+          onTap: () => onTaskTap(task),
           trailing: overdue
               ? Text(
                   'Overdue',
