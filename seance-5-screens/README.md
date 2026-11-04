@@ -1,17 +1,30 @@
 # campusflow_app
 
-A new Flutter project.
+Three screens of CampusFlow in Flutter (90-minute workshop).
 
-## Getting Started
+## Screens
 
-This project is a starting point for a Flutter application.
+- **Deadlines**: list of tasks (`ListView.builder` of `ListTile`), floating button, `NavigationBar`.
+- **Detail**: `Column` and `Card` with a "Mark as done" `FilledButton`.
+- **Form**: `Form`, `TextFormField`, validators, `SnackBar`, scrollable.
+- **Tablet**: from 840 dp, `LayoutBuilder` shows the list and the detail side by side.
 
-A few resources to get you started if this is your first Flutter project:
+The models (`Task`, `Course`, `User`) come from the `campusflow_models` workshop.
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Structure
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+lib/models/      Task, Course, User
+lib/data/        sample data
+lib/screens/     the screens
+lib/utils/       date formatting
+test/            widget tests
+```
+
+## Run
+
+```
+flutter pub get
+flutter run -d edge
+flutter test
+```
