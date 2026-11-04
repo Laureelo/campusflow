@@ -31,4 +31,36 @@ void main() {
     expect(find.text('Overdue'), findsOneWidget);
     expect(find.byIcon(Icons.check_circle), findsNWidgets(2));
   });
+
+  testWidgets('the form validates then adds a deadline', (tester) async {
+    await tester.pumpWidget(const CampusFlowApp());
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Title is required'), findsOneWidget);
+    expect(find.text('Pick a due date'), findsOneWidget);
+    expect(find.text('Pick a course'), findsOneWidget);
+
+    await tester.enterText(find.byType(TextFormField).first, 'Write the report');
+
+    await tester.tap(find.byType(TextFormField).at(1));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Course'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Databases').last);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Write the report'), findsOneWidget);
+    expect(find.text('Deadline added'), findsOneWidget);
+  });
 }

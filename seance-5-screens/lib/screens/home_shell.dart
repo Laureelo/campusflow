@@ -6,6 +6,7 @@ import '../models/task.dart';
 import 'courses_list.dart';
 import 'deadlines_list.dart';
 import 'task_detail.dart';
+import 'task_form.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -44,6 +45,23 @@ class _HomeShellState extends State<HomeShell> {
     );
   }
 
+  Future<void> _openForm() async {
+    final task = await Navigator.of(context).push<Task>(
+      MaterialPageRoute(
+        builder: (context) => TaskFormScreen(
+          courses: sampleCourses,
+          nextId: _tasks.length + 1,
+        ),
+      ),
+    );
+    if (task == null || !mounted) return;
+
+    setState(() => _tasks.add(task));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Deadline added')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final onDeadlines = _selectedIndex == 0;
@@ -59,7 +77,7 @@ class _HomeShellState extends State<HomeShell> {
           : const CoursesList(courses: sampleCourses),
       floatingActionButton: onDeadlines
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: _openForm,
               tooltip: 'Add a deadline',
               child: const Icon(Icons.add),
             )
