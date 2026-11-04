@@ -32,6 +32,38 @@ void main() {
     expect(find.byIcon(Icons.check_circle), findsNWidgets(2));
   });
 
+  testWidgets('shows the list and the detail side by side on a wide screen',
+      (tester) async {
+    tester.view.physicalSize = const Size(1000, 700);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(const CampusFlowApp());
+
+    expect(find.text('Select a deadline'), findsOneWidget);
+
+    await tester.tap(find.text('Submit the Flutter assignment'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Mark as done'), findsOneWidget);
+    expect(find.text('Submit the Flutter assignment'), findsNWidgets(2));
+
+    await tester.tap(find.text('Mark as done'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Status: Done'), findsOneWidget);
+  });
+
+  testWidgets('keeps a single column on a narrow screen', (tester) async {
+    tester.view.physicalSize = const Size(600, 800);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(const CampusFlowApp());
+
+    expect(find.text('Select a deadline'), findsNothing);
+  });
+
   testWidgets('the form validates then adds a deadline', (tester) async {
     await tester.pumpWidget(const CampusFlowApp());
 

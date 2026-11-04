@@ -8,6 +8,8 @@ import 'deadlines_list.dart';
 import 'task_detail.dart';
 import 'task_form.dart';
 
+const double wideBreakpoint = 840;
+
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
 
@@ -18,6 +20,7 @@ class HomeShell extends StatefulWidget {
 class _HomeShellState extends State<HomeShell> {
   final List<Task> _tasks = buildSampleTasks();
   int _selectedIndex = 0;
+  int? _selectedTaskId;
 
   Course? _courseOf(Task task) {
     return sampleCourses
@@ -62,6 +65,36 @@ class _HomeShellState extends State<HomeShell> {
     );
   }
 
+  Widget _buildWideLayout() {
+    final selected =
+        _tasks.where((task) => task.id == _selectedTaskId).firstOrNull;
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: DeadlinesList(
+            tasks: _tasks,
+            courses: sampleCourses,
+            selectedId: _selectedTaskId,
+            onTaskTap: (task) => setState(() => _selectedTaskId = task.id),
+          ),
+        ),
+        const VerticalDivider(width: 1),
+        Expanded(
+          flex: 3,
+          child: selected == null
+              ? const Center(child: Text('Select a deadline'))
+              : TaskDetailView(
+                  task: selected,
+                  course: _courseOf(selected),
+                  onMarkDone: () => _markDone(selected),
+                ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final onDeadlines = _selectedIndex == 0;
@@ -69,10 +102,17 @@ class _HomeShellState extends State<HomeShell> {
     return Scaffold(
       appBar: AppBar(title: Text(onDeadlines ? 'Deadlines' : 'Courses')),
       body: onDeadlines
-          ? DeadlinesList(
-              tasks: _tasks,
-              courses: sampleCourses,
-              onTaskTap: _openDetail,
+          ? LayoutBuilder(
+              builder: (context, constraints) {
+                if (constraints.maxWidth < wideBreakpoint) {
+                  return DeadlinesList(
+                    tasks: _tasks,
+                    courses: sampleCourses,
+                    onTaskTap: _openDetail,
+                  );
+                }
+                return _buildWideLayout();
+              },
             )
           : const CoursesList(courses: sampleCourses),
       floatingActionButton: onDeadlines
