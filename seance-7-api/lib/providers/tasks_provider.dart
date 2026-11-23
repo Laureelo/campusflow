@@ -1,11 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/task.dart';
+import 'auth_provider.dart';
 import 'data_providers.dart';
 
 class TasksNotifier extends AsyncNotifier<List<Task>> {
   @override
-  Future<List<Task>> build() {
+  Future<List<Task>> build() async {
+    final signedIn = await ref.watch(authProvider.future);
+    if (!signedIn) return const [];
     return ref.watch(taskRepositoryProvider).getAll();
   }
 

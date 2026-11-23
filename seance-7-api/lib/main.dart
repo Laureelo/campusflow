@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import 'router/app_router.dart';
 
@@ -8,29 +7,16 @@ void main() {
   runApp(ProviderScope(retry: (_, _) => null, child: const CampusFlowApp()));
 }
 
-class CampusFlowApp extends StatefulWidget {
+class CampusFlowApp extends ConsumerWidget {
   const CampusFlowApp({super.key});
 
   @override
-  State<CampusFlowApp> createState() => _CampusFlowAppState();
-}
-
-class _CampusFlowAppState extends State<CampusFlowApp> {
-  final GoRouter _router = buildRouter();
-
-  @override
-  void dispose() {
-    _router.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp.router(
       title: 'CampusFlow',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
-      routerConfig: _router,
+      routerConfig: ref.watch(routerProvider),
     );
   }
 }

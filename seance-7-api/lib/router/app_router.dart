@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../providers/auth_provider.dart';
 import '../screens/courses_list.dart';
 import '../screens/deadlines_screen.dart';
 import '../screens/login_screen.dart';
@@ -8,9 +11,24 @@ import '../screens/shell_scaffold.dart';
 import '../screens/task_detail.dart';
 import '../screens/task_form.dart';
 
-GoRouter buildRouter() {
-  return GoRouter(
+final routerProvider = Provider<GoRouter>((ref) {
+  final authChanges = ValueNotifier<int>(0);
+  ref.listen(authProvider, (_, _) => authChanges.value++);
+
+  final router = GoRouter(
     initialLocation: '/taches',
+    refreshListenable: authChanges,
+    redirect: (context, state) {
+      final auth = ref.read(authProvider);
+      if (auth.isLoading) return null;
+
+      final signedIn = auth.value ?? false;
+      final onLogin = state.matchedLocation == '/login';
+
+      if (!signedIn && !onLogin) return '/login';
+      if (signedIn && onLogin) return '/taches';
+      return null;
+    },
     routes: [
       GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       ShellRoute(
@@ -43,4 +61,10 @@ GoRouter buildRouter() {
       ),
     ],
   );
-}
+
+  ref.onDispose(() {
+    router.dispose();
+    authChanges.dispose();
+  });
+  return router;
+});
