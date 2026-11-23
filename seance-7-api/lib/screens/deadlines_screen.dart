@@ -42,7 +42,10 @@ class _DeadlinesScreenState extends State<DeadlinesScreen> {
               flex: 3,
               child: selectedId == null
                   ? const Center(child: Text('Select a deadline'))
-                  : TaskDetailView(taskId: selectedId),
+                  : TaskDetailView(
+                      taskId: selectedId,
+                      onDeleted: () => setState(() => _selectedTaskId = null),
+                    ),
             ),
           ],
         );

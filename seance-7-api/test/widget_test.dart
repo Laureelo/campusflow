@@ -119,6 +119,36 @@ void main() {
     expect(tester.widget<Checkbox>(find.byType(Checkbox).first).value, isTrue);
   });
 
+  testWidgets('deleting from the detail asks first then removes the task', (
+    tester,
+  ) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.text('Review the SQL joins'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    expect(find.text('Delete this deadline?'), findsOneWidget);
+
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+    expect(find.text('Review the SQL joins'), findsOneWidget);
+
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AlertDialog),
+        matching: find.text('Delete'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Review the SQL joins'), findsNothing);
+    expect(find.text('Submit the Flutter assignment'), findsOneWidget);
+  });
+
   testWidgets('shows the list and the detail side by side on a wide screen', (
     tester,
   ) async {

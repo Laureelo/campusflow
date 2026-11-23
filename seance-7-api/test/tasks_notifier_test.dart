@@ -75,6 +75,22 @@ void main() {
     expect(tasks.firstWhere((t) => t.id == 4).done, isTrue);
   });
 
+  test(
+    'delete removes the task from the state and from the repository',
+    () async {
+      final repository = sampleRepository();
+      final container = testContainer(repository);
+      addTearDown(container.dispose);
+      await container.read(tasksProvider.future);
+
+      await container.read(tasksProvider.notifier).delete(3);
+
+      final tasks = container.read(tasksProvider).requireValue;
+      expect(tasks.map((t) => t.id), [1, 2, 4]);
+      expect((await repository.getAll()).map((t) => t.id), [1, 2, 4]);
+    },
+  );
+
   test('a failed action throws and leaves the list untouched', () async {
     final repository = sampleRepository();
     final container = testContainer(repository);

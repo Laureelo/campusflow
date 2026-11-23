@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../models/course.dart';
 import '../providers/courses_provider.dart';
@@ -10,8 +11,36 @@ import 'error_view.dart';
 
 class TaskDetailView extends ConsumerWidget {
   final int taskId;
+  final VoidCallback? onDeleted;
 
-  const TaskDetailView({super.key, required this.taskId});
+  const TaskDetailView({super.key, required this.taskId, this.onDeleted});
+
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Delete this deadline?'),
+        content: const Text('This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    final deleted = await runAction(
+      context,
+      () => ref.read(tasksProvider.notifier).delete(taskId),
+    );
+    if (deleted) onDeleted?.call();
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,6 +103,14 @@ class TaskDetailView extends ConsumerWidget {
                       ),
                 child: const Text('Mark as done'),
               ),
+              const SizedBox(height: 8),
+              TextButton(
+                onPressed: () => _confirmDelete(context, ref),
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                ),
+                child: const Text('Delete'),
+              ),
             ],
           ),
         );
@@ -91,7 +128,7 @@ class TaskDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Deadline')),
-      body: TaskDetailView(taskId: taskId),
+      body: TaskDetailView(taskId: taskId, onDeleted: () => context.pop()),
     );
   }
 }

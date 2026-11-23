@@ -28,6 +28,14 @@ class TasksNotifier extends AsyncNotifier<List<Task>> {
 
   Future<void> markDone(int id) => _setDone(id, true);
 
+  Future<void> delete(int id) async {
+    await ref.read(taskRepositoryProvider).delete(id);
+    state = AsyncData([
+      for (final task in state.value ?? const <Task>[])
+        if (task.id != id) task,
+    ]);
+  }
+
   Future<void> _setDone(int id, bool done) async {
     final updated = await ref
         .read(taskRepositoryProvider)
