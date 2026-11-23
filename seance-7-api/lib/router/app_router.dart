@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../providers/auth_provider.dart';
+import '../screens/course_tasks_screen.dart';
 import '../screens/courses_list.dart';
 import '../screens/deadlines_screen.dart';
 import '../screens/login_screen.dart';
@@ -47,6 +48,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const ProfileScreen(),
           ),
         ],
+      ),
+      GoRoute(
+        path: '/cours/:id',
+        builder: (context, state) {
+          final id = int.tryParse(state.pathParameters['id'] ?? '') ?? -1;
+          return CourseTasksScreen(courseId: id);
+        },
       ),
       GoRoute(
         path: '/taches/nouvelle',

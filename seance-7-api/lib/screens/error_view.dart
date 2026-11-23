@@ -28,7 +28,11 @@ class ErrorView extends StatelessWidget {
             const SizedBox(height: 16),
             Text(message, textAlign: TextAlign.center),
             const SizedBox(height: 16),
-            FilledButton(onPressed: onRetry, child: const Text('Retry')),
+            FilledButton(
+              onPressed: onRetry,
+              style: FilledButton.styleFrom(minimumSize: const Size(160, 52)),
+              child: const Text('Retry'),
+            ),
           ],
         ),
       ),
