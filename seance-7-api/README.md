@@ -46,8 +46,6 @@ flutter test
 
 Les tests du repository utilisent un faux adaptateur HTTP, ceux des écrans utilisent `FakeTaskRepository`. Aucun ne demande que le serveur tourne.
 
-## Limites
+## Remarques
 
-- L'application a été essayée dans le navigateur (Edge) et par les tests, pas sur un émulateur Android.
-- Le jeton est un simple texte aléatoire gardé en mémoire par le serveur, il disparaît quand on le relance. Ce n'est pas un vrai JWT.
-- Les textes de l'interface sont en anglais.
+Testé dans Edge et avec `flutter test`, pas encore sur un émulateur Android. Le jeton est un texte aléatoire que le serveur oublie quand on le relance, ce n'est pas un JWT. L'interface est en anglais.
