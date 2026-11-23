@@ -17,3 +17,14 @@ flutter pub get
 flutter run -d edge
 flutter test
 ```
+
+## Routes
+
+| Adresse | Écran |
+|---|---|
+| /login | connexion (hors barre de navigation) |
+| /taches | échéances |
+| /taches/nouvelle | formulaire de création |
+| /taches/:id | détail d'une tâche |
+| /cours | cours |
+| /profil | profil |
