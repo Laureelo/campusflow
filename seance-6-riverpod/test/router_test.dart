@@ -48,8 +48,9 @@ void main() {
     expect(find.text('Task not found'), findsOneWidget);
   });
 
-  testWidgets('/taches/nouvelle opens the form and is not read as an id',
-      (tester) async {
+  testWidgets('/taches/nouvelle opens the form and is not read as an id', (
+    tester,
+  ) async {
     final router = await pumpRouter(tester);
 
     router.go('/taches/nouvelle');
@@ -59,8 +60,9 @@ void main() {
     expect(find.text('Task not found'), findsNothing);
   });
 
-  testWidgets('the navigation bar switches between the three destinations',
-      (tester) async {
+  testWidgets('the navigation bar switches between the three destinations', (
+    tester,
+  ) async {
     final router = await pumpRouter(tester);
 
     await tester.tap(find.text('Courses'));
@@ -75,6 +77,25 @@ void main() {
 
     await tester.tap(find.text('Deadlines'));
     await tester.pumpAndSettle();
+    expect(currentPath(router), '/taches');
+  });
+
+  testWidgets('/login shows the sign in form without the navigation bar', (
+    tester,
+  ) async {
+    final router = await pumpRouter(tester);
+
+    router.go('/login');
+    await tester.pumpAndSettle();
+
+    expect(find.text('Sign in'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsNothing);
+
+    await tester.enterText(find.byType(TextFormField).first, 'awa@campus.test');
+    await tester.enterText(find.byType(TextFormField).last, 'secret');
+    await tester.tap(find.text('Sign in'));
+    await tester.pumpAndSettle();
+
     expect(currentPath(router), '/taches');
   });
 }

@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../screens/courses_list.dart';
 import '../screens/deadlines_screen.dart';
+import '../screens/login_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/shell_scaffold.dart';
 import '../screens/task_detail.dart';
@@ -11,6 +12,7 @@ GoRouter buildRouter() {
   return GoRouter(
     initialLocation: '/taches',
     routes: [
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
       ShellRoute(
         builder: (context, state, child) => ShellScaffold(child: child),
         routes: [
