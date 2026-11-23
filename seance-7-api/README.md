@@ -48,4 +48,4 @@ Les tests du repository utilisent un faux adaptateur HTTP, ceux des écrans util
 
 ## Remarques
 
-Testé dans Edge et avec `flutter test`, pas encore sur un émulateur Android. Le jeton est un texte aléatoire que le serveur oublie quand on le relance, ce n'est pas un JWT. L'interface est en anglais.
+Testé avec `flutter test`, dans Edge et sur un émulateur Android (le jeton reste en place après avoir fermé et rouvert l'application). Le jeton est un texte aléatoire que le serveur oublie quand on le relance, ce n'est pas un JWT. L'interface est en anglais.

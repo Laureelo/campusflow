@@ -17,4 +17,4 @@ Chaque dossier de code garde l'état du projet à la fin de la séance. L'applic
 
 Le code est en anglais, les documents de conception en français. Les adresses (`/taches`, `/cours`, `/profil`) sont celles de l'énoncé.
 
-Les applications ont été testées dans le navigateur et avec `flutter test`. Je n'ai pas encore d'émulateur Android installé.
+Les applications ont été testées avec `flutter test`, dans le navigateur (Edge) et sur un émulateur Android (Pixel 6, Android 15). Capture de l'application sur l'émulateur : `docs/android-emulateur.png`.
