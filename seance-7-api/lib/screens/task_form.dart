@@ -108,6 +108,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<int>(
+                isExpanded: true,
                 decoration: const InputDecoration(
                   labelText: 'Course',
                   border: OutlineInputBorder(),
