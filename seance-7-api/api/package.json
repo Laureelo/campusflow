@@ -1,0 +1,13 @@
+{
+  "name": "campusflow-api",
+  "version": "1.0.0",
+  "description": "Mock REST API for CampusFlow",
+  "private": true,
+  "scripts": {
+    "raw": "json-server --watch db.json --port 3000",
+    "start": "node server.js"
+  },
+  "devDependencies": {
+    "json-server": "^0.17.4"
+  }
+}
