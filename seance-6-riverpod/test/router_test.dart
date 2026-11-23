@@ -22,14 +22,14 @@ void main() {
   testWidgets('starts on the deadlines list', (tester) async {
     final router = await pumpRouter(tester);
 
-    expect(currentPath(router), '/tasks');
+    expect(currentPath(router), '/taches');
     expect(find.text('Submit the Flutter assignment'), findsOneWidget);
   });
 
   testWidgets('the id in the path opens the matching task', (tester) async {
     final router = await pumpRouter(tester);
 
-    router.go('/tasks/2');
+    router.go('/taches/2');
     await tester.pumpAndSettle();
 
     expect(find.text('Review the SQL joins'), findsOneWidget);
@@ -39,20 +39,20 @@ void main() {
   testWidgets('an unknown id shows a not found message', (tester) async {
     final router = await pumpRouter(tester);
 
-    router.go('/tasks/999');
+    router.go('/taches/999');
     await tester.pumpAndSettle();
     expect(find.text('Task not found'), findsOneWidget);
 
-    router.go('/tasks/abc');
+    router.go('/taches/abc');
     await tester.pumpAndSettle();
     expect(find.text('Task not found'), findsOneWidget);
   });
 
-  testWidgets('/tasks/new opens the form and is not read as an id',
+  testWidgets('/taches/nouvelle opens the form and is not read as an id',
       (tester) async {
     final router = await pumpRouter(tester);
 
-    router.go('/tasks/new');
+    router.go('/taches/nouvelle');
     await tester.pumpAndSettle();
 
     expect(find.text('New deadline'), findsOneWidget);
@@ -65,16 +65,16 @@ void main() {
 
     await tester.tap(find.text('Courses'));
     await tester.pumpAndSettle();
-    expect(currentPath(router), '/courses');
+    expect(currentPath(router), '/cours');
     expect(find.text('Mobile Programming'), findsOneWidget);
 
     await tester.tap(find.text('Profile'));
     await tester.pumpAndSettle();
-    expect(currentPath(router), '/profile');
+    expect(currentPath(router), '/profil');
     expect(find.text('awa@campus.test'), findsOneWidget);
 
     await tester.tap(find.text('Deadlines'));
     await tester.pumpAndSettle();
-    expect(currentPath(router), '/tasks');
+    expect(currentPath(router), '/taches');
   });
 }

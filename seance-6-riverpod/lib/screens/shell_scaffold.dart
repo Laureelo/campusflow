@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-const List<String> _paths = ['/tasks', '/courses', '/profile'];
+const List<String> _paths = ['/taches', '/cours', '/profil'];
 const List<String> _titles = ['Deadlines', 'Courses', 'Profile'];
 
 class ShellScaffold extends StatelessWidget {
@@ -15,7 +15,7 @@ class ShellScaffold extends StatelessWidget {
   }
 
   Future<void> _addTask(BuildContext context) async {
-    final added = await context.push<bool>('/tasks/new');
+    final added = await context.push<bool>('/taches/nouvelle');
     if (added != true || !context.mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(

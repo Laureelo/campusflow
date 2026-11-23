@@ -22,7 +22,7 @@ class _DeadlinesScreenState extends State<DeadlinesScreen> {
       builder: (context, constraints) {
         if (constraints.maxWidth < wideBreakpoint) {
           return DeadlinesList(
-            onTaskTap: (task) => context.push('/tasks/${task.id}'),
+            onTaskTap: (task) => context.push('/taches/${task.id}'),
           );
         }
 

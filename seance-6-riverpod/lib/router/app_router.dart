@@ -9,31 +9,31 @@ import '../screens/task_form.dart';
 
 GoRouter buildRouter() {
   return GoRouter(
-    initialLocation: '/tasks',
+    initialLocation: '/taches',
     routes: [
       ShellRoute(
         builder: (context, state, child) => ShellScaffold(child: child),
         routes: [
           GoRoute(
-            path: '/tasks',
+            path: '/taches',
             builder: (context, state) => const DeadlinesScreen(),
           ),
           GoRoute(
-            path: '/courses',
+            path: '/cours',
             builder: (context, state) => const CoursesList(),
           ),
           GoRoute(
-            path: '/profile',
+            path: '/profil',
             builder: (context, state) => const ProfileScreen(),
           ),
         ],
       ),
       GoRoute(
-        path: '/tasks/new',
+        path: '/taches/nouvelle',
         builder: (context, state) => const TaskFormScreen(),
       ),
       GoRoute(
-        path: '/tasks/:id',
+        path: '/taches/:id',
         builder: (context, state) {
           final id = int.tryParse(state.pathParameters['id'] ?? '') ?? -1;
           return TaskDetailScreen(taskId: id);
