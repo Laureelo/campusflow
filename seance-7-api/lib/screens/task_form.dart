@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../models/course.dart';
 import '../providers/courses_provider.dart';
 import '../providers/tasks_provider.dart';
 import '../utils/format.dart';
+import '../utils/run_action.dart';
 
 class TaskFormScreen extends ConsumerStatefulWidget {
   const TaskFormScreen({super.key});
@@ -19,6 +21,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
   final _dateController = TextEditingController();
   DateTime? _dueDate;
   int? _courseId;
+  bool _saving = false;
 
   @override
   void dispose() {
@@ -41,20 +44,28 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
     }
   }
 
-  void _save() {
+  Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
-    ref.read(tasksProvider.notifier).add(
-          title: _titleController.text.trim(),
-          dueDate: _dueDate!,
-          courseId: _courseId!,
-        );
-    context.pop(true);
+    setState(() => _saving = true);
+    final saved = await runAction(
+      context,
+      () => ref
+          .read(tasksProvider.notifier)
+          .add(
+            title: _titleController.text.trim(),
+            dueDate: _dueDate!,
+            courseId: _courseId!,
+          ),
+    );
+    if (!mounted) return;
+    setState(() => _saving = false);
+    if (saved) context.pop(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final courses = ref.watch(coursesProvider);
+    final courses = ref.watch(coursesProvider).value ?? const <Course>[];
 
     return Scaffold(
       appBar: AppBar(title: const Text('New deadline')),
@@ -103,13 +114,25 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
                 ),
                 items: [
                   for (final course in courses)
-                    DropdownMenuItem(value: course.id, child: Text(course.name)),
+                    DropdownMenuItem(
+                      value: course.id,
+                      child: Text(course.name),
+                    ),
                 ],
                 onChanged: (value) => _courseId = value,
                 validator: (value) => value == null ? 'Pick a course' : null,
               ),
               const SizedBox(height: 24),
-              FilledButton(onPressed: _save, child: const Text('Save')),
+              FilledButton(
+                onPressed: _saving ? null : _save,
+                child: _saving
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Save'),
+              ),
             ],
           ),
         ),

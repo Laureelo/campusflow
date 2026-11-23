@@ -1,22 +1,28 @@
-import 'package:campusflow_api/main.dart';
 import 'package:campusflow_api/providers/filter_provider.dart';
 import 'package:campusflow_api/providers/tasks_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/test_app.dart';
+
 void main() {
   group('filteredTasksProvider', () {
     late ProviderContainer container;
 
-    setUp(() {
-      container = ProviderContainer();
+    setUp(() async {
+      container = testContainer(sampleRepository());
       addTearDown(container.dispose);
+      await container.read(tasksProvider.future);
     });
 
     List<int> idsFor(TaskFilter filter) {
       container.read(filterProvider.notifier).select(filter);
-      return container.read(filteredTasksProvider).map((t) => t.id).toList();
+      return container
+          .read(filteredTasksProvider)
+          .requireValue
+          .map((t) => t.id)
+          .toList();
     }
 
     test('all keeps every task', () {
@@ -35,21 +41,20 @@ void main() {
       expect(idsFor(TaskFilter.overdue), [2]);
     });
 
-    test('the filtered list follows the tasks when one changes', () {
+    test('the filtered list follows the tasks when one changes', () async {
       container.read(filterProvider.notifier).select(TaskFilter.overdue);
-      expect(container.read(filteredTasksProvider), hasLength(1));
+      expect(container.read(filteredTasksProvider).requireValue, hasLength(1));
 
-      container.read(tasksProvider.notifier).markDone(2);
+      await container.read(tasksProvider.notifier).markDone(2);
 
-      expect(container.read(filteredTasksProvider), isEmpty);
+      expect(container.read(filteredTasksProvider).requireValue, isEmpty);
     });
   });
 
   group('filter chips', () {
-    Widget buildApp() => const ProviderScope(child: CampusFlowApp());
-
     testWidgets('the overdue chip keeps only the late task', (tester) async {
-      await tester.pumpWidget(buildApp());
+      await tester.pumpWidget(buildTestApp());
+      await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ChoiceChip, 'Overdue'));
       await tester.pump();
@@ -60,14 +65,15 @@ void main() {
     });
 
     testWidgets('an empty filter shows a message', (tester) async {
-      await tester.pumpWidget(buildApp());
+      await tester.pumpWidget(buildTestApp());
+      await tester.pumpAndSettle();
 
       await tester.tap(find.widgetWithText(ChoiceChip, 'Done'));
       await tester.pump();
       expect(find.byType(ListTile), findsOneWidget);
 
       await tester.tap(find.byType(Checkbox));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(find.text('No tasks for this filter'), findsOneWidget);
     });

@@ -1,42 +1,44 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/sample_data.dart';
 import '../models/task.dart';
+import 'data_providers.dart';
 
-class TasksNotifier extends Notifier<List<Task>> {
+class TasksNotifier extends AsyncNotifier<List<Task>> {
   @override
-  List<Task> build() => buildSampleTasks();
+  Future<List<Task>> build() {
+    return ref.watch(taskRepositoryProvider).getAll();
+  }
 
-  void add({
+  Future<void> add({
     required String title,
     required DateTime dueDate,
     required int courseId,
-  }) {
-    final lastId = state.fold<int>(0, (max, task) => task.id > max ? task.id : max);
-    final task = Task(
-      id: lastId + 1,
-      title: title,
-      dueDate: dueDate,
-      courseId: courseId,
-    );
-    state = [...state, task];
+  }) async {
+    final created = await ref
+        .read(taskRepositoryProvider)
+        .create(title: title, dueDate: dueDate, courseId: courseId);
+    state = AsyncData([...?state.value, created]);
   }
 
-  void toggle(int id) {
-    state = [
-      for (final task in state)
-        task.id == id ? task.copyWith(done: !task.done) : task,
-    ];
+  Future<void> toggle(int id) async {
+    final task = state.value?.where((task) => task.id == id).firstOrNull;
+    if (task == null) return;
+    await _setDone(id, !task.done);
   }
 
-  void markDone(int id) {
-    state = [
-      for (final task in state)
-        task.id == id ? task.copyWith(done: true) : task,
-    ];
+  Future<void> markDone(int id) => _setDone(id, true);
+
+  Future<void> _setDone(int id, bool done) async {
+    final updated = await ref
+        .read(taskRepositoryProvider)
+        .setDone(id, done: done);
+    state = AsyncData([
+      for (final task in state.value ?? const <Task>[])
+        task.id == id ? updated : task,
+    ]);
   }
 }
 
-final tasksProvider = NotifierProvider<TasksNotifier, List<Task>>(
+final tasksProvider = AsyncNotifierProvider<TasksNotifier, List<Task>>(
   TasksNotifier.new,
 );

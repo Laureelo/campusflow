@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../data/sample_data.dart';
 import '../models/course.dart';
+import 'data_providers.dart';
 
-final coursesProvider = Provider<List<Course>>((ref) => sampleCourses);
+final coursesProvider = FutureProvider<List<Course>>((ref) {
+  return ref.watch(courseRepositoryProvider).getAll();
+});

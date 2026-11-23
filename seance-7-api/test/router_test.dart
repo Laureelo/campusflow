@@ -1,16 +1,18 @@
 import 'package:campusflow_api/router/app_router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+
+import 'support/test_app.dart';
 
 Future<GoRouter> pumpRouter(WidgetTester tester) async {
   final router = buildRouter();
   addTearDown(router.dispose);
 
   await tester.pumpWidget(
-    ProviderScope(child: MaterialApp.router(routerConfig: router)),
+    testScope(child: MaterialApp.router(routerConfig: router)),
   );
+  await tester.pumpAndSettle();
   return router;
 }
 

@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'router/app_router.dart';
 
 void main() {
-  runApp(const ProviderScope(child: CampusFlowApp()));
+  runApp(ProviderScope(retry: (_, _) => null, child: const CampusFlowApp()));
 }
 
 class CampusFlowApp extends StatefulWidget {

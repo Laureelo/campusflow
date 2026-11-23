@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../models/course.dart';
 import '../models/task.dart';
 import '../providers/courses_provider.dart';
 import '../providers/filter_provider.dart';
 import '../providers/tasks_provider.dart';
 import '../utils/format.dart';
+import '../utils/run_action.dart';
+import 'error_view.dart';
 
 const Map<TaskFilter, String> _filterLabels = {
   TaskFilter.all: 'All',
@@ -51,7 +54,7 @@ class DeadlinesList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasks = ref.watch(filteredTasksProvider);
-    final courses = ref.watch(coursesProvider);
+    final courses = ref.watch(coursesProvider).value ?? const <Course>[];
     final now = DateTime.now();
 
     String courseName(int courseId) {
@@ -66,44 +69,55 @@ class DeadlinesList extends ConsumerWidget {
       children: [
         const FilterBar(),
         Expanded(
-          child: tasks.isEmpty
-              ? const Center(child: Text('No tasks for this filter'))
-              : ListView.builder(
-                  itemCount: tasks.length,
-                  itemBuilder: (context, index) {
-                    final task = tasks[index];
+          child: tasks.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => ErrorView(
+              error: error,
+              onRetry: () => ref.invalidate(tasksProvider),
+            ),
+            data: (list) => list.isEmpty
+                ? const Center(child: Text('No tasks for this filter'))
+                : ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      final task = list[index];
 
-                    return ListTile(
-                      leading: Checkbox(
-                        value: task.done,
-                        onChanged: (_) =>
-                            ref.read(tasksProvider.notifier).toggle(task.id),
-                      ),
-                      title: Text(
-                        task.title,
-                        style: task.done
-                            ? const TextStyle(
-                                decoration: TextDecoration.lineThrough,
+                      return ListTile(
+                        leading: Checkbox(
+                          value: task.done,
+                          onChanged: (_) => runAction(
+                            context,
+                            () => ref
+                                .read(tasksProvider.notifier)
+                                .toggle(task.id),
+                          ),
+                        ),
+                        title: Text(
+                          task.title,
+                          style: task.done
+                              ? const TextStyle(
+                                  decoration: TextDecoration.lineThrough,
+                                )
+                              : null,
+                        ),
+                        subtitle: Text(
+                          '${courseName(task.courseId)} • ${formatDate(task.dueDate)}',
+                        ),
+                        selected: task.id == selectedId,
+                        onTap: () => onTaskTap(task),
+                        trailing: task.isOverdue(now)
+                            ? Text(
+                                'Overdue',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.error,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               )
                             : null,
-                      ),
-                      subtitle: Text(
-                        '${courseName(task.courseId)} • ${formatDate(task.dueDate)}',
-                      ),
-                      selected: task.id == selectedId,
-                      onTap: () => onTaskTap(task),
-                      trailing: task.isOverdue(now)
-                          ? Text(
-                              'Overdue',
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          : null,
-                    );
-                  },
-                ),
+                      );
+                    },
+                  ),
+          ),
         ),
       ],
     );
