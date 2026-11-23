@@ -55,6 +55,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    Image.asset(
+                      'assets/images/logo.png',
+                      height: 96,
+                      semanticLabel: 'CampusFlow logo',
+                    ),
+                    const SizedBox(height: 16),
                     Text(
                       'CampusFlow',
                       style: Theme.of(context).textTheme.headlineMedium,

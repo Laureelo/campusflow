@@ -1,5 +1,3 @@
-String formatDate(DateTime date) {
-  final month = date.month.toString().padLeft(2, '0');
-  final day = date.day.toString().padLeft(2, '0');
-  return '${date.year}-$month-$day';
-}
+import 'package:intl/intl.dart';
+
+String formatDate(DateTime date) => DateFormat('d MMM y').format(date);
