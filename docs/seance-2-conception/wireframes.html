@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampusFlow, wireframes v1</title>
+<style>
+  :root {
+    --bg: #FFFBFF;
+    --ink: #1F1B1A;
+    --ink2: #5C5755;
+    --brand: #EC3013;
+    --action: #C42B13;
+    --ok: #1B6B3A;
+    --err: #B3261E;
+    --line: #E4DEDC;
+    --soft: #F6F1EF;
+    --board: #EFEBE9;
+    --s: 0.66;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--board);
+    color: var(--ink);
+    font-family: Roboto, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.4;
+  }
+  .board-head { padding: 44px 56px 8px; max-width: 1600px; }
+  .board-head h1 { margin: 0; font-size: 34px; letter-spacing: -0.5px; }
+  .board-head p { margin: 8px 0 0; color: var(--ink2); max-width: 760px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .tag {
+    font-size: 13px; padding: 5px 12px; border-radius: 999px;
+    background: #fff; border: 1px solid var(--line); color: var(--ink2);
+  }
+  .tag b { color: var(--ink); font-weight: 600; }
+  section { padding: 28px 56px 8px; max-width: 1600px; }
+  section h2 { margin: 0 0 4px; font-size: 20px; }
+  section > p.lead { margin: 0 0 22px; color: var(--ink2); font-size: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 40px; align-items: flex-start; }
+  .slot { width: calc(360px * var(--s)); }
+  .frame-wrap { width: calc(360px * var(--s)); height: calc(800px * var(--s)); }
+  .caption { margin-top: 14px; font-size: 14px; }
+  .caption strong { display: block; font-size: 15px; }
+  .caption span { color: var(--ink2); font-size: 13px; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .4px;
+    text-transform: uppercase; padding: 3px 9px; border-radius: 999px;
+    background: var(--action); color: #fff; margin-left: 8px; vertical-align: 2px;
+  }
+  .badge.off { background: #fff; color: var(--ink2); border: 1px solid var(--line); }
+  .caption .badge { color: #fff; font-size: 11px; }
+  .caption .badge.off { color: var(--ink2); }
+  .verdict { margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; }
+  .verdict li { display: flex; gap: 8px; padding: 3px 0; color: var(--ink2); }
+  .verdict i { font-style: normal; font-weight: 700; width: 14px; }
+  .verdict .y { color: var(--ok); } .verdict .m { color: #9A6B00; } .verdict .n { color: var(--err); }
+
+  .phone {
+    width: 360px; height: 800px; transform: scale(var(--s)); transform-origin: top left;
+    background: var(--bg); border: 9px solid #1F1B1A; border-radius: 40px;
+    overflow: hidden; display: flex; flex-direction: column; position: relative;
+    box-shadow: 0 18px 40px rgba(31,27,26,.22);
+  }
+  .status { height: 30px; flex: none; display: flex; justify-content: space-between; align-items: center; padding: 6px 22px 0; font-size: 12px; font-weight: 600; }
+  .status .dots { letter-spacing: 2px; }
+  .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; animation: fade .18s ease-out; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .appbar { flex: none; display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 16px; font-size: 22px; }
+  .appbar .back { cursor: pointer; width: 40px; height: 40px; margin-left: -8px; display: grid; place-items: center; border-radius: 50%; border: 0; background: none; font-size: 22px; color: var(--ink); }
+  .appbar .back:hover { background: var(--soft); }
+  .body { flex: 1; overflow: hidden; padding: 0 16px; min-height: 0; }
+  .h-week { font-size: 22px; font-weight: 700; margin: 4px 0 2px; }
+  .sub { color: var(--ink2); font-size: 13px; }
+
+  [data-go] { cursor: pointer; }
+  .item {
+    display: flex; align-items: center; gap: 12px; min-height: 62px; padding: 8px 12px;
+    border: 1px solid var(--line); border-radius: 12px; background: #fff; margin-top: 8px;
+  }
+  .item:hover { border-color: var(--action); }
+  .item .circle { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #8B8584; }
+  .item.done .circle { background: var(--ok); border-color: var(--ok); position: relative; }
+  .item.done .circle::after { content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .item.done .t { text-decoration: line-through; color: var(--ink2); }
+  .item .txt { flex: 1; min-width: 0; }
+  .item .t { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .m { font-size: 12px; color: var(--ink2); }
+  .pill { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: #FDE4E0; color: var(--err); white-space: nowrap; }
+  .pill.soft { background: var(--soft); color: var(--ink2); font-weight: 600; }
+  .group { font-size: 13px; font-weight: 700; color: var(--action); margin: 16px 0 0; letter-spacing: .3px; }
+
+  .fab {
+    position: absolute; right: 16px; bottom: 82px; border: 0; cursor: pointer;
+    background: var(--action); color: #fff; font: inherit; font-size: 14px; font-weight: 600;
+    height: 52px; padding: 0 20px; border-radius: 999px; box-shadow: 0 6px 14px rgba(196,43,19,.35);
+  }
+  .nav { flex: none; height: 72px; display: flex; border-top: 1px solid var(--line); background: #FBF4F2; }
+  .nav button {
+    flex: 1; border: 0; background: none; font: inherit; font-size: 12px; color: var(--ink2);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer;
+  }
+  .nav button svg { width: 22px; height: 22px; fill: currentColor; }
+  .nav button.on { color: var(--ink); font-weight: 700; }
+  .nav button.on .ic { background: #FAD9D3; border-radius: 999px; padding: 4px 18px; margin: -4px 0; }
+  .nav .ic { display: grid; place-items: center; }
+
+  .field { margin-top: 16px; }
+  .field label { display: block; font-size: 12px; color: var(--ink2); margin: 0 0 4px 4px; }
+  .input { height: 52px; border: 1.5px solid #8B8584; border-radius: 10px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; background: #fff; color: var(--ink2); font-size: 16px; }
+  .input.filled { color: var(--ink); }
+  .btn {
+    display: block; width: 100%; height: 52px; border: 0; border-radius: 999px; cursor: pointer;
+    background: var(--action); color: #fff; font: inherit; font-size: 14px; font-weight: 600; margin-top: 24px;
+  }
+  .btn.ghost { background: none; color: var(--action); margin-top: 8px; }
+  .btn:disabled { background: #D9CFCC; cursor: default; }
+  .logo-ph { width: 84px; height: 84px; border-radius: 22px; background: var(--brand); margin: 58px auto 14px; display: grid; place-items: center; color: #fff; font-size: 12px; letter-spacing: 1px; }
+  .center { text-align: center; }
+  .card { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 16px; }
+  .card .row2 { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; border-bottom: 1px solid var(--soft); }
+  .card .row2:last-child { border: 0; }
+  .card .row2 span:first-child { color: var(--ink2); }
+  .avatar { width: 84px; height: 84px; border-radius: 50%; background: #FAD9D3; margin: 20px auto 10px; display: grid; place-items: center; font-size: 30px; font-weight: 700; color: var(--action); }
+  .list-row { display: flex; justify-content: space-between; align-items: center; min-height: 52px; border-bottom: 1px solid var(--line); font-size: 15px; }
+  .list-row span:last-child { color: var(--ink2); }
+  .strip { display: flex; gap: 4px; margin: 10px 0 6px; }
+  .day { width: 40px; text-align: center; padding: 6px 0; border-radius: 10px; font-size: 12px; color: var(--ink2); background: #fff; border: 1px solid var(--line); }
+  .day b { display: block; font-size: 16px; color: var(--ink); }
+  .day.sel { background: var(--action); border-color: var(--action); color: #fff; }
+  .day.sel b { color: #fff; }
+  .note-bad { margin-top: 10px; font-size: 12px; color: var(--err); }
+
+  .tokens { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; max-width: 1100px; }
+  .sw { background: #fff; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: 12px; }
+  .sw i { display: block; height: 48px; }
+  .sw div { padding: 8px 10px; }
+  .sw b { display: block; font-size: 13px; }
+  .sw span { color: var(--ink2); }
+  .specs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  footer { padding: 28px 56px 56px; color: var(--ink2); font-size: 13px; max-width: 900px; }
+  @media (max-width: 760px) {
+    :root { --s: 0.62; }
+    .board-head, section, footer { padding-left: 20px; padding-right: 20px; }
+    .row { gap: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="board-head">
+  <h1>CampusFlow, wireframes v1</h1>
+  <p>Les écrans du parcours « suivre mes échéances », pensés pour Awa : étudiante en M1, téléphone Android d'entrée de gamme, réseau irrégulier. Chaque téléphone est cliquable : on peut parcourir l'application comme dans un prototype.</p>
+  <div class="tags">
+    <span class="tag"><b>Format</b> 360 × 800 dp</span>
+    <span class="tag"><b>Système</b> Material 3</span>
+    <span class="tag"><b>Navigation</b> barre inférieure, 3 destinations</span>
+    <span class="tag"><b>Cibles tactiles</b> 48 dp minimum</span>
+    <span class="tag"><b>Contraste</b> 4,5:1 minimum</span>
+  </div>
+</header>
+
+<section>
+  <h2>1. Le parcours principal</h2>
+  <p class="lead">Connexion, liste des échéances, détail, nouvelle tâche, profil. Touchez une tâche, le bouton « + », la flèche de retour ou la barre du bas.</p>
+  <div class="row" id="flow"></div>
+</section>
+
+<section>
+  <h2>2. L'écran Échéances en trois variantes</h2>
+  <p class="lead">Évaluées avec la grille du cours : besoin du persona, parcours le plus court, accessibilité, faisabilité en Flutter.</p>
+  <div class="row" id="variants"></div>
+</section>
+
+<section>
+  <h2>3. Design system v1</h2>
+  <p class="lead">Les valeurs que le thème Flutter reprend en séance 4.</p>
+  <div class="tokens" id="tokens"></div>
+  <div class="specs">
+    <span class="tag"><b>Police</b> Roboto, échelle Material 3</span>
+    <span class="tag"><b>Titre d'écran</b> 22 sp</span>
+    <span class="tag"><b>Titre de tâche</b> 16 sp</span>
+    <span class="tag"><b>Texte</b> 14 sp</span>
+    <span class="tag"><b>Légende</b> 12 sp</span>
+    <span class="tag"><b>Espacements</b> 4 · 8 · 12 · 16 · 24 dp</span>
+    <span class="tag"><b>Cartes</b> rayon 12 dp</span>
+    <span class="tag"><b>Boutons</b> en pilule, 52 dp</span>
+    <span class="tag"><b>Fenêtres</b> compacte &lt; 600 · moyenne 600 à 839 · étendue ≥ 840 dp</span>
+  </div>
+</section>
+
+<footer>Wireframes réalisés pour la séance 2 du cours de programmation mobile. Les textes sont des exemples, le contenu réel vient de l'API à partir de la séance 7.</footer>
+
+<script>
+const ICON = {
+  d: '<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h2V2zm-1 8v9h12v-9H6z"/></svg>',
+  c: '<svg viewBox="0 0 24 24"><path d="M4 4h7a2 2 0 0 1 1 .3A2 2 0 0 1 13 4h7v14h-7a1 1 0 0 0-1 1 1 1 0 0 0-1-1H4V4zm2 2v10h5V6H6zm7 0v10h5V6h-5z"/></svg>',
+  p: '<svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-3 0-8 1.5-8 4.5V20h16v-1.5c0-3-5-4.5-8-4.5z"/></svg>'
+};
+
+const nav = (on) => `<div class="nav">
+  <button class="${on === 'd' ? 'on' : ''}" data-go="home"><span class="ic">${ICON.d}</span>Échéances</button>
+  <button class="${on === 'c' ? 'on' : ''}" data-go="courses"><span class="ic">${ICON.c}</span>Cours</button>
+  <button class="${on === 'p' ? 'on' : ''}" data-go="profile"><span class="ic">${ICON.p}</span>Profil</button>
+</div>`;
+
+const item = (t, m, o = {}) => `<div class="item ${o.done ? 'done' : ''}" data-go="detail" data-title="${t}" data-course="${o.course || 'Mobile'}" data-when="${o.when || m}">
+  <span class="circle"></span>
+  <div class="txt"><div class="t">${t}</div><div class="m">${m}</div></div>
+  ${o.pill ? `<span class="pill ${o.soft ? 'soft' : ''}">${o.pill}</span>` : ''}
+</div>`;
+
+const SCREENS = {
+  login: () => `<div class="screen"><div class="body">
+    <div class="logo-ph">LOGO</div>
+    <div class="center" style="font-size:26px;font-weight:700">CampusFlow</div>
+    <div class="center sub" style="margin-top:4px">Vos échéances au même endroit</div>
+    <div class="field" style="margin-top:34px"><label>Email</label><div class="input">awa@campus.test</div></div>
+    <div class="field"><label>Mot de passe</label><div class="input">••••••••</div></div>
+    <button class="btn" data-go="home">Se connecter</button>
+    <button class="btn ghost">Mot de passe oublié ?</button>
+  </div></div>`,
+
+  deadlinesA: () => `<div class="screen">
+    <div class="appbar">Échéances</div>
+    <div class="body">
+      <div class="h-week">Cette semaine</div>
+      <div class="sub">3 à rendre · 1 en retard</div>
+      ${item('Rendu TP Dart', 'Mobile · demain', { pill: 'Demain', soft: true })}
+      ${item('Projet Flutter', 'Mobile · vendredi 17 h')}
+      ${item('Examen UX', 'Mobile · lundi')}
+      ${item('TP Réseaux', 'Réseaux · hier', { pill: 'En retard', course: 'Réseaux' })}
+      ${item('Lire le chapitre 4', 'Mobile · terminé', { done: true })}
+    </div>
+    <button class="fab" data-go="new">+ Nouvelle tâche</button>
+    ${nav('d')}</div>`,
+
+  deadlinesB: () => `<div class="screen">
+    <div class="appbar">Échéances</div>
+    <div class="body">
+      <div class="group">MOBILE</div>
+      ${item('Rendu TP Dart', 'demain', { pill: 'Demain', soft: true })}
+      ${item('Projet Flutter', 'vendredi 17 h')}
+      <div class="group">RÉSEAUX</div>
+      ${item('TP Réseaux', 'hier', { pill: 'En retard', course: 'Réseaux' })}
+      <div class="group">BASES DE DONNÉES</div>
+      ${item('Réviser les jointures', 'lundi', { course: 'Bases de données' })}
+    </div>
+    <button class="fab" data-go="new">+ Nouvelle tâche</button>
+    ${nav('d')}</div>`,
+
+  deadlinesC: () => `<div class="screen">
+    <div class="appbar">Novembre</div>
+    <div class="body">
+      <div class="strip">
+        ${[['L', 9], ['M', 10], ['M', 11], ['J', 12], ['V', 13], ['S', 14], ['D', 15]].map(([l, n]) => `<div class="day ${n === 12 ? 'sel' : ''}">${l}<b>${n}</b></div>`).join('')}
+      </div>
+      <div class="note-bad">Cibles de 40 dp de large, sous le minimum de 48 dp</div>
+      <div class="group" style="margin-top:12px">JEUDI 12</div>
+      ${item('Rendu TP Dart', 'Mobile · 10 h')}
+      ${item('Quiz Réseaux', 'Réseaux · 14 h', { course: 'Réseaux' })}
+    </div>
+    <button class="fab" data-go="new">+ Nouvelle tâche</button>
+    ${nav('d')}</div>`,
+
+  courses: () => `<div class="screen">
+    <div class="appbar">Cours</div>
+    <div class="body">
+      <div class="item" data-go="home"><div class="txt"><div class="t">Mobile</div><div class="m">3 échéances</div></div><span class="pill soft">›</span></div>
+      <div class="item" data-go="home"><div class="txt"><div class="t">Réseaux</div><div class="m">1 échéance</div></div><span class="pill soft">›</span></div>
+      <div class="item" data-go="home"><div class="txt"><div class="t">Bases de données</div><div class="m">1 échéance</div></div><span class="pill soft">›</span></div>
+    </div>
+    ${nav('c')}</div>`,
+
+  detail: (p) => `<div class="screen">
+    <div class="appbar"><button class="back" data-go="back" aria-label="Retour">←</button>${p.title || 'Projet Flutter'}</div>
+    <div class="body">
+      <div class="card">
+        <div class="row2"><span>Cours</span><span>${p.course || 'Mobile'}</span></div>
+        <div class="row2"><span>Échéance</span><span>${p.when || 'vendredi 17 h'}</span></div>
+        <div class="row2"><span>Statut</span><span class="js-status">à faire</span></div>
+      </div>
+      <div style="margin:18px 4px 6px;font-weight:700">Description</div>
+      <div class="sub" style="font-size:14px;padding:0 4px">Trois écrans et la navigation, à pousser sur Git.</div>
+      <button class="btn js-done" data-go="markdone">Marquer comme fait</button>
+    </div></div>`,
+
+  new: () => `<div class="screen">
+    <div class="appbar"><button class="back" data-go="back" aria-label="Retour">←</button>Nouvelle tâche</div>
+    <div class="body">
+      <div class="field" style="margin-top:4px"><label>Titre</label><div class="input filled">Rendu TP Flutter</div></div>
+      <div class="field"><label>Cours</label><div class="input filled"><span>Mobile</span><span>▾</span></div></div>
+      <div class="field"><label>Date</label><div class="input filled"><span>vendredi 13 novembre</span><span>▦</span></div></div>
+      <div class="field"><label>Rappel</label><div class="input filled"><span>La veille à 18 h</span><span>▾</span></div></div>
+      <button class="btn" data-go="saved">Enregistrer</button>
+    </div></div>`,
+
+  profile: () => `<div class="screen">
+    <div class="appbar">Profil</div>
+    <div class="body">
+      <div class="avatar">A</div>
+      <div class="center" style="font-size:20px;font-weight:700">Awa</div>
+      <div class="center sub">Master 1 Informatique</div>
+      <div style="margin-top:22px">
+        <div class="list-row"><span>Préférences de rappel</span><span>›</span></div>
+        <div class="list-row"><span>Taille du texte</span><span>›</span></div>
+        <div class="list-row"><span>Langue</span><span>›</span></div>
+      </div>
+      <button class="btn ghost" data-go="login" style="border:1.5px solid var(--action);margin-top:22px">Se déconnecter</button>
+    </div>
+    ${nav('p')}</div>`
+};
+
+function mount(host, start, homeName) {
+  const phone = document.createElement('div');
+  phone.className = 'phone';
+  phone.innerHTML = '<div class="status"><span>9:41</span><span class="dots">▂▄▆ ▮</span></div><div class="view"></div>';
+  phone.querySelector('.view').style.cssText = 'flex:1;display:flex;flex-direction:column;min-height:0';
+  host.appendChild(phone);
+
+  const stack = [];
+  let current = { name: start, params: {} };
+
+  function draw() {
+    const view = phone.querySelector('.view');
+    view.innerHTML = SCREENS[current.name](current.params);
+  }
+
+  phone.addEventListener('click', (e) => {
+    const el = e.target.closest('[data-go]');
+    if (!el) return;
+    const go = el.dataset.go;
+
+    if (go === 'markdone') {
+      const status = phone.querySelector('.js-status');
+      if (status) status.textContent = 'terminé';
+      el.textContent = 'Terminé ✓';
+      el.disabled = true;
+      return;
+    }
+    if (go === 'back') {
+      current = stack.pop() || { name: homeName, params: {} };
+      draw();
+      return;
+    }
+
+    let next;
+    if (go === 'home') next = { name: homeName, params: {} };
+    else if (go === 'saved') { stack.length = 0; next = { name: homeName, params: {} }; }
+    else if (go === 'detail') next = { name: 'detail', params: { title: el.dataset.title, course: el.dataset.course, when: el.dataset.when } };
+    else next = { name: go, params: {} };
+
+    if (['detail', 'new'].includes(next.name)) stack.push(current);
+    else stack.length = 0;
+    current = next;
+    draw();
+  });
+  draw();
+}
+
+function slot(parent, o) {
+  const s = document.createElement('div');
+  s.className = 'slot';
+  s.innerHTML = '<div class="frame-wrap"></div><div class="caption"></div>';
+  s.querySelector('.caption').innerHTML = o.caption;
+  parent.appendChild(s);
+  mount(s.querySelector('.frame-wrap'), o.start, o.home || 'deadlinesA');
+}
+
+const flow = document.getElementById('flow');
+slot(flow, { start: 'login', caption: '<strong>1 · Connexion</strong><span>Un seul champ à remplir à la fois, bouton plein en pilule.</span>' });
+slot(flow, { start: 'deadlinesA', caption: '<strong>2 · Échéances<span class="badge">variante A</span></strong><span>Ce qui est dû cette semaine, repère « Demain » ou « En retard ». Ajout en 3 appuis.</span>' });
+slot(flow, { start: 'detail', caption: '<strong>3 · Détail d\'une tâche</strong><span>Une carte d\'information, une action principale : marquer comme fait.</span>' });
+slot(flow, { start: 'new', caption: '<strong>4 · Nouvelle tâche</strong><span>Titre, cours, date, rappel. Formulaire défilant, il reste utilisable avec le clavier.</span>' });
+slot(flow, { start: 'profile', caption: '<strong>5 · Profil</strong><span>Compte, préférences de rappel, déconnexion.</span>' });
+
+const variants = document.getElementById('variants');
+slot(variants, {
+  start: 'deadlinesA', home: 'deadlinesA',
+  caption: `<strong>A · Liste de la semaine<span class="badge">Retenue</span></strong>
+  <ul class="verdict">
+    <li><i class="y">✓</i>Besoin : on voit ce qui est dû dès l'ouverture</li>
+    <li><i class="y">✓</i>Parcours : tout visible, ajout en 3 appuis</li>
+    <li><i class="y">✓</i>Accessibilité : lignes de 62 dp, bouton de 52 dp</li>
+    <li><i class="y">✓</i>Faisabilité : ListView.builder et ListTile</li>
+  </ul>`
+});
+slot(variants, {
+  start: 'deadlinesB', home: 'deadlinesB',
+  caption: `<strong>B · Groupée par cours<span class="badge off">Écartée</span></strong>
+  <ul class="verdict">
+    <li><i class="m">~</i>Besoin : l'urgence est dispersée entre les cours</li>
+    <li><i class="m">~</i>Parcours : plusieurs groupes à parcourir</li>
+    <li><i class="y">✓</i>Accessibilité : lignes de 52 dp</li>
+    <li><i class="m">~</i>Faisabilité : en-têtes de groupe à gérer</li>
+  </ul>`
+});
+slot(variants, {
+  start: 'deadlinesC', home: 'deadlinesC',
+  caption: `<strong>C · Bandeau de jours<span class="badge off">Écartée</span></strong>
+  <ul class="verdict">
+    <li><i class="m">~</i>Besoin : il faut choisir un jour pour voir ses tâches</li>
+    <li><i class="n">✗</i>Parcours : un appui de plus pour changer de jour</li>
+    <li><i class="n">✗</i>Accessibilité : jours de 40 dp, sous les 48 dp</li>
+    <li><i class="m">~</i>Faisabilité : un calendrier demande plus de code</li>
+  </ul>`
+});
+
+const tokens = [
+  ['#EC3013', 'Marque', 'Logo, grands éléments · 4,2:1 sur blanc'],
+  ['#C42B13', 'Action', 'Boutons, liens · 5,67:1 avec texte blanc'],
+  ['#FFFBFF', 'Fond', 'Fond des écrans'],
+  ['#1F1B1A', 'Texte', 'Titres et texte · 16,7:1'],
+  ['#5C5755', 'Texte secondaire', 'Cours, dates · 6,95:1'],
+  ['#1B6B3A', 'Réussite', 'Tâche terminée · 6,38:1'],
+  ['#B3261E', 'Erreur, retard', 'Repère « En retard » · 6,38:1']
+];
+document.getElementById('tokens').innerHTML = tokens.map(([c, n, d]) =>
+  `<div class="sw"><i style="background:${c};${c === '#FFFBFF' ? 'border-bottom:1px solid #E4DEDC' : ''}"></i><div><b>${n}</b>${c}<br><span>${d}</span></div></div>`).join('');
+</script>
+</body>
+</html>
