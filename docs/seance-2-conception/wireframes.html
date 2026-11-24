@@ -110,6 +110,9 @@
   .field label { display: block; font-size: 12px; color: var(--ink2); margin: 0 0 4px 4px; }
   .input { height: 52px; border: 1.5px solid #8B8584; border-radius: 10px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; background: #fff; color: var(--ink2); font-size: 16px; }
   .input.filled { color: var(--ink); }
+  input.input, select.input { width: 100%; font: inherit; font-size: 16px; color: var(--ink); outline: none; }
+  input.input:focus, select.input:focus { border-color: var(--action); box-shadow: 0 0 0 2px #F6C9C1; }
+  select.input { appearance: none; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%235C5755' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 14px center; }
   .btn {
     display: block; width: 100%; height: 52px; border: 0; border-radius: 999px; cursor: pointer;
     background: var(--action); color: #fff; font: inherit; font-size: 14px; font-weight: 600; margin-top: 24px;
@@ -190,8 +193,6 @@
   </div>
 </section>
 
-<footer>Wireframes réalisés pour la séance 2 du cours de programmation mobile. Les textes sont des exemples, le contenu réel vient de l'API à partir de la séance 7.</footer>
-
 <script>
 const ICON = {
   d: '<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h2a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h2V2zm-1 8v9h12v-9H6z"/></svg>',
@@ -205,9 +206,13 @@ const nav = (on) => `<div class="nav">
   <button class="${on === 'p' ? 'on' : ''}" data-go="profile"><span class="ic">${ICON.p}</span>Profil</button>
 </div>`;
 
-const item = (t, m, o = {}) => `<div class="item ${o.done ? 'done' : ''}" data-go="detail" data-title="${t}" data-course="${o.course || 'Mobile'}" data-when="${o.when || m}">
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const extraItems = (extra) => extra.map((x) => item(x.title, `${x.course} · ${x.when}`, { course: x.course, when: x.when })).join('');
+
+const item = (t, m, o = {}) => `<div class="item ${o.done ? 'done' : ''}" data-go="detail" data-title="${esc(t)}" data-course="${esc(o.course || 'Mobile')}" data-when="${esc(o.when || m)}">
   <span class="circle"></span>
-  <div class="txt"><div class="t">${t}</div><div class="m">${m}</div></div>
+  <div class="txt"><div class="t">${esc(t)}</div><div class="m">${esc(m)}</div></div>
   ${o.pill ? `<span class="pill ${o.soft ? 'soft' : ''}">${o.pill}</span>` : ''}
 </div>`;
 
@@ -216,13 +221,13 @@ const SCREENS = {
     <div class="logo-ph">LOGO</div>
     <div class="center" style="font-size:26px;font-weight:700">CampusFlow</div>
     <div class="center sub" style="margin-top:4px">Vos échéances au même endroit</div>
-    <div class="field" style="margin-top:34px"><label>Email</label><div class="input">awa@campus.test</div></div>
-    <div class="field"><label>Mot de passe</label><div class="input">••••••••</div></div>
+    <div class="field" style="margin-top:34px"><label>Email</label><input class="input" type="email" value="awa@campus.test" autocomplete="off"></div>
+    <div class="field"><label>Mot de passe</label><input class="input" type="password" value="motdepasse" autocomplete="off"></div>
     <button class="btn" data-go="home">Se connecter</button>
     <button class="btn ghost">Mot de passe oublié ?</button>
   </div></div>`,
 
-  deadlinesA: () => `<div class="screen">
+  deadlinesA: (p, extra) => `<div class="screen">
     <div class="appbar">Échéances</div>
     <div class="body">
       <div class="h-week">Cette semaine</div>
@@ -232,11 +237,12 @@ const SCREENS = {
       ${item('Examen UX', 'Mobile · lundi')}
       ${item('TP Réseaux', 'Réseaux · hier', { pill: 'En retard', course: 'Réseaux' })}
       ${item('Lire le chapitre 4', 'Mobile · terminé', { done: true })}
+      ${extraItems(extra)}
     </div>
     <button class="fab" data-go="new">+ Nouvelle tâche</button>
     ${nav('d')}</div>`,
 
-  deadlinesB: () => `<div class="screen">
+  deadlinesB: (p, extra) => `<div class="screen">
     <div class="appbar">Échéances</div>
     <div class="body">
       <div class="group">MOBILE</div>
@@ -246,11 +252,12 @@ const SCREENS = {
       ${item('TP Réseaux', 'hier', { pill: 'En retard', course: 'Réseaux' })}
       <div class="group">BASES DE DONNÉES</div>
       ${item('Réviser les jointures', 'lundi', { course: 'Bases de données' })}
+      ${extra.length ? '<div class="group">AJOUTÉES</div>' + extraItems(extra) : ''}
     </div>
     <button class="fab" data-go="new">+ Nouvelle tâche</button>
     ${nav('d')}</div>`,
 
-  deadlinesC: () => `<div class="screen">
+  deadlinesC: (p, extra) => `<div class="screen">
     <div class="appbar">Novembre</div>
     <div class="body">
       <div class="strip">
@@ -260,6 +267,7 @@ const SCREENS = {
       <div class="group" style="margin-top:12px">JEUDI 12</div>
       ${item('Rendu TP Dart', 'Mobile · 10 h')}
       ${item('Quiz Réseaux', 'Réseaux · 14 h', { course: 'Réseaux' })}
+      ${extraItems(extra)}
     </div>
     <button class="fab" data-go="new">+ Nouvelle tâche</button>
     ${nav('d')}</div>`,
@@ -274,11 +282,11 @@ const SCREENS = {
     ${nav('c')}</div>`,
 
   detail: (p) => `<div class="screen">
-    <div class="appbar"><button class="back" data-go="back" aria-label="Retour">←</button>${p.title || 'Projet Flutter'}</div>
+    <div class="appbar"><button class="back" data-go="back" aria-label="Retour">←</button>${esc(p.title || 'Projet Flutter')}</div>
     <div class="body">
       <div class="card">
-        <div class="row2"><span>Cours</span><span>${p.course || 'Mobile'}</span></div>
-        <div class="row2"><span>Échéance</span><span>${p.when || 'vendredi 17 h'}</span></div>
+        <div class="row2"><span>Cours</span><span>${esc(p.course || 'Mobile')}</span></div>
+        <div class="row2"><span>Échéance</span><span>${esc(p.when || 'vendredi 17 h')}</span></div>
         <div class="row2"><span>Statut</span><span class="js-status">à faire</span></div>
       </div>
       <div style="margin:18px 4px 6px;font-weight:700">Description</div>
@@ -289,10 +297,10 @@ const SCREENS = {
   new: () => `<div class="screen">
     <div class="appbar"><button class="back" data-go="back" aria-label="Retour">←</button>Nouvelle tâche</div>
     <div class="body">
-      <div class="field" style="margin-top:4px"><label>Titre</label><div class="input filled">Rendu TP Flutter</div></div>
-      <div class="field"><label>Cours</label><div class="input filled"><span>Mobile</span><span>▾</span></div></div>
-      <div class="field"><label>Date</label><div class="input filled"><span>vendredi 13 novembre</span><span>▦</span></div></div>
-      <div class="field"><label>Rappel</label><div class="input filled"><span>La veille à 18 h</span><span>▾</span></div></div>
+      <div class="field" style="margin-top:4px"><label>Titre</label><input class="input" name="title" type="text" value="Rendu TP Flutter" placeholder="Titre de la tâche" autocomplete="off"></div>
+      <div class="field"><label>Cours</label><select class="input" name="course"><option>Mobile</option><option>Réseaux</option><option>Bases de données</option></select></div>
+      <div class="field"><label>Date</label><input class="input" name="when" type="text" value="vendredi 13 novembre" autocomplete="off"></div>
+      <div class="field"><label>Rappel</label><select class="input" name="reminder"><option>La veille à 18 h</option><option>Le jour même à 8 h</option><option>Aucun</option></select></div>
       <button class="btn" data-go="saved">Enregistrer</button>
     </div></div>`,
 
@@ -320,11 +328,12 @@ function mount(host, start, homeName) {
   host.appendChild(phone);
 
   const stack = [];
+  const extra = [];
   let current = { name: start, params: {} };
 
   function draw() {
     const view = phone.querySelector('.view');
-    view.innerHTML = SCREENS[current.name](current.params);
+    view.innerHTML = SCREENS[current.name](current.params, extra);
   }
 
   phone.addEventListener('click', (e) => {
@@ -347,7 +356,20 @@ function mount(host, start, homeName) {
 
     let next;
     if (go === 'home') next = { name: homeName, params: {} };
-    else if (go === 'saved') { stack.length = 0; next = { name: homeName, params: {} }; }
+    else if (go === 'saved') {
+      const val = (n) => (phone.querySelector(`[name=${n}]`) || {}).value || '';
+      const title = val('title').trim();
+      if (!title) {
+        const input = phone.querySelector('[name=title]');
+        input.style.borderColor = 'var(--err)';
+        input.placeholder = 'Le titre est obligatoire';
+        input.focus();
+        return;
+      }
+      extra.push({ title, course: val('course') || 'Mobile', when: val('when').trim() || 'bientôt' });
+      stack.length = 0;
+      next = { name: homeName, params: {} };
+    }
     else if (go === 'detail') next = { name: 'detail', params: { title: el.dataset.title, course: el.dataset.course, when: el.dataset.when } };
     else next = { name: go, params: {} };
 
